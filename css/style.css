@@ -352,6 +352,10 @@ p {
     width: 70%;
   }
 
+  .carousel-item img {
+    height: 80%;
+  }
+
   .carousel-control-next,
   .carousel-control-prev {
     margin: auto 6%;
