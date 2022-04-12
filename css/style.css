@@ -353,6 +353,7 @@ p {
   }
 
   .carousel-item img {
+    margin: auto;
     height: 80%;
   }
 
