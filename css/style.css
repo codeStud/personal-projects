@@ -352,6 +352,11 @@ p {
     width: 70%;
   }
 
+  .carousel-control-next,
+  .carousel-control-prev {
+    margin: auto 6%;
+  }
+
   .sign {
     margin-top: 20px;
   }
