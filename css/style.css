@@ -348,6 +348,10 @@ p {
     flex-direction: column;
   }
 
+  .carousel-inner {
+    width: 70%;
+  }
+
   .sign {
     margin-top: 20px;
   }
