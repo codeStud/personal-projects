@@ -7,6 +7,8 @@ const app = express();
 //   res.send("Hello World");
 // });
 
+// setting EJS as the templating engine to generate dynamic HTML to serve to client
+app.set("view engine", "ejs");
 // grab the URL and replace <password> from MongoDB Atlas
 const connectionString =
   "mongodb+srv://starwars-quotes-app:starwars-quotes-app@cluster0.6sntn.mongodb.net/?retryWrites=true&w=majority";
@@ -36,8 +38,17 @@ MongoClient.connect(connectionString)
     // to parse the HTML form data
     app.use(bodyParser.urlencoded({ extended: true }));
 
+    // telling our server to accept the JSON data using bodyParser middleware
+    app.use(bodyParser.json());
+
+    app.use(express.static("public"));
+
     app.get("/", (req, res) => {
-      res.sendFile(__dirname + "/index.html");
+      quotesCollection
+        .find()
+        .toArray()
+        .then((results) => res.render("index.ejs", { quotes: results }))
+        .catch((error) => console.log(error));
     });
 
     app.post("/quotes", (req, res) => {
@@ -47,6 +58,44 @@ MongoClient.connect(connectionString)
         .then((result) => {
           console.log(result);
           res.redirect("/");
+        })
+        .catch((error) => console.log(error));
+    });
+
+    app.put("/quotes", (req, res) => {
+      // console.log(req.body);
+      quotesCollection
+        .findOneAndUpdate(
+          { name: "Pratik Raj" },
+          {
+            $set: {
+              name: req.body.name,
+              quote: req.body.quote,
+            },
+          },
+          {
+            upsert: true,
+          }
+        )
+        .then((result) => {
+          console.log(result);
+          res.json("Success");
+        })
+        .catch((error) => console.log(error));
+    });
+
+    app.delete("/quotes", (req, res) => {
+      quotesCollection
+        .deleteOne(
+          { name: req.body.name } // 'Coming from fetch in main.js'
+          // Also, no need of options in this case
+        )
+        .then((result) => {
+          // If there are no more Darth Vadar quotes, result.deletedCount will be 0
+          if (result.deletedCount === 0) {
+            return res.json("No quote to delete");
+          }
+          res.json(`Deleted Darth Vadar's quote`);
         })
         .catch((error) => console.log(error));
     });
